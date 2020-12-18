@@ -34,7 +34,6 @@ function init(location, weatherData) {
   }
 
   function weeklyForecast() {
-    console.log(weatherData.daily);
     weatherData.daily.map((weekday) => {
       const date = new Date(weekday.dt * 1000);
       const forecastMarkup = `
@@ -42,6 +41,7 @@ function init(location, weatherData) {
           <li>${Math.round(weekday.temp.max)}°/${Math.round(weekday.temp.min)}°</li>  
           <li><i class="wi wi-owm-day-${weekday.weather[0].id}"></i></li>
           <li>${weekday.weather[0].description}</li>  
+          <li><i class="wi wi-direction-down" style="transform: rotate(${weekday.wind_deg}deg)"></i></>
           <li>${Math.round(weekday.wind_speed)} m/s</li>
           <li>${date.getDate()} ${date.toLocaleDateString("default", { month: "short" })}</li>  
         </ul>
