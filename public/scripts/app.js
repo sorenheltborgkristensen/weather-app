@@ -12,7 +12,7 @@ async function getWeather() {
 }
 
 function init(location, weatherData) {
-  function current() {
+  function currentWeather() {
     const currentWeather = weatherData.current;
     const city = location.city;
     const sunrise = new Date(currentWeather.sunrise * 1000);
@@ -20,35 +20,46 @@ function init(location, weatherData) {
     const currentMarkUp = `
       <h2>${city}</h2>
       <div>
-        <img src="http://openweathermap.org/img/wn/${currentWeather.weather[0].icon}@2x.png" alt="${currentWeather.weather[0].description}" />
-        <p>${currentWeather.temp}°</p>
+        <i class="wi wi-owm-day-${currentWeather.weather[0].id}"></i>
+        <p>${Math.round(currentWeather.temp)}°</p>
       </div>
       <ul>
-        <li>Føles som: ${currentWeather.feels_like}°</li>
+        <li>Føles som: ${Math.round(currentWeather.feels_like)}°</li>
         <li>UV index: ${currentWeather.uvi}</li>
         <li>Luftfugtighed: ${currentWeather.humidity}</li>
         <li>Sol op/ned: ${sunrise.getHours()}:${sunrise.getMinutes()}/${sunset.getHours()}:${sunset.getMinutes()}</li>
       </ul>
     `;
-
-    document.getElementById("current-weather").innerHTML = currentMarkUp;
+    document.getElementById("current").innerHTML = currentMarkUp;
   }
 
-  function daily() {
-    weatherData.daily.map((day) => {
-      console.log(day);
+  function weeklyForecast() {
+    console.log(weatherData.daily);
+    weatherData.daily.map((weekday) => {
+      const date = new Date(weekday.dt * 1000);
+      const forecastMarkup = `
+        <ul class="forecast-day">
+          <li>${Math.round(weekday.temp.max)}°/${Math.round(weekday.temp.min)}°</li>  
+          <li><i class="wi wi-owm-day-${weekday.weather[0].id}"></i></li>
+          <li>${weekday.weather[0].description}</li>  
+          <li>${Math.round(weekday.wind_speed)} m/s</li>
+          <li>${date.getDate()} ${date.toLocaleDateString("default", { month: "short" })}</li>  
+        </ul>
+      `;
+      document.getElementById("forecast").innerHTML += forecastMarkup;
     });
   }
 
-  function hourly() {
+  function hourlyForecast() {
     weatherData.hourly.map((hour) => {
-      console.log(hour);
+      const date = new Date(hour.dt * 1000);
+      //console.log(date);
     });
   }
 
-  current();
-  daily();
-  hourly();
+  currentWeather();
+  weeklyForecast();
+  hourlyForecast();
 }
 
 getWeather();
