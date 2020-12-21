@@ -8,58 +8,87 @@ async function getWeather() {
   const location = await getLocation();
   const weatherFetch = await fetch(`weather/${location.latitude}&${location.longitude}`);
   const weatherData = await weatherFetch.json();
-  init(location, weatherData);
+  return weatherData;
 }
 
-function init(location, weatherData) {
-  function currentWeather() {
-    const currentWeather = weatherData.current;
+async function getData() {
+  try {
+    const data = await Promise.all([getLocation(), getWeather()]);
+    const [location, weather] = data;
+    init(location, weather);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function init(location, weather) {
+  function current() {
+    const current = weather.current;
     const city = location.city;
-    const sunrise = new Date(currentWeather.sunrise * 1000);
-    const sunset = new Date(currentWeather.sunset * 1000);
-    const currentMarkUp = `
+    const id = current.weather[0].id;
+    const temp = Math.round(current.temp);
+    const feels_like = Math.round(current.feels_like);
+    const uvi = current.uvi;
+    const humidity = current.humidity;
+    const sunrise = new Date(current.sunrise * 1000);
+    const sunset = new Date(current.sunset * 1000);
+
+    const currentStructure = `
       <h2>${city}</h2>
       <div>
-        <i class="wi wi-owm-day-${currentWeather.weather[0].id}"></i>
-        <p>${Math.round(currentWeather.temp)}°</p>
+        <i class="wi wi-owm-day-${id}"></i>
+        <p>${temp}°</p>
       </div>
       <ul>
-        <li>Føles som: ${Math.round(currentWeather.feels_like)}°</li>
-        <li>UV index: ${currentWeather.uvi}</li>
-        <li>Luftfugtighed: ${currentWeather.humidity}</li>
+        <li>Føles som: ${feels_like}°</li>
+        <li>UV index: ${uvi}</li>
+        <li>Luftfugtighed: ${humidity}</li>
         <li>Sol op/ned: ${sunrise.getHours()}:${sunrise.getMinutes()}/${sunset.getHours()}:${sunset.getMinutes()}</li>
       </ul>
     `;
-    document.getElementById("current").innerHTML = currentMarkUp;
+
+    document.getElementById("current").innerHTML = currentStructure;
   }
 
-  function weeklyForecast() {
-    weatherData.daily.map((weekday) => {
-      const date = new Date(weekday.dt * 1000);
-      const forecastMarkup = `
+  function daily() {
+    const days = weather.daily;
+
+    days.map((day) => {
+      const max = Math.round(day.temp.max);
+      const min = Math.round(day.temp.min);
+      const id = day.weather[0].id;
+      const description = day.weather[0].description;
+      const wind_deg = day.wind_deg;
+      const wind_speed = Math.round(day.wind_speed);
+      const dateNumber = new Date(day.dt * 1000).getDate();
+      const dateName = new Date(day.dt * 1000).toLocaleDateString("default", { month: "short" });
+
+      const dailyStructure = `
         <ul class="forecast-day">
-          <li>${Math.round(weekday.temp.max)}°/${Math.round(weekday.temp.min)}°</li>  
-          <li><i class="wi wi-owm-day-${weekday.weather[0].id}"></i></li>
-          <li>${weekday.weather[0].description}</li>  
-          <li><i class="wi wi-direction-down" style="transform: rotate(${weekday.wind_deg}deg)"></i></>
-          <li>${Math.round(weekday.wind_speed)} m/s</li>
-          <li>${date.getDate()} ${date.toLocaleDateString("default", { month: "short" })}</li>  
+          <li>${max}°/${min}°</li>  
+          <li><i class="wi wi-owm-day-${id}"></i></li>
+          <li>${description}</li>  
+          <li><i class="wi wi-direction-down" style="transform: rotate(${wind_deg}deg)"></i></>
+          <li>${wind_speed} m/s</li>
+          <li>${dateNumber} ${dateName}</li>  
         </ul>
       `;
-      document.getElementById("forecast").innerHTML += forecastMarkup;
+
+      document.getElementById("forecast").innerHTML += dailyStructure;
     });
   }
 
-  function hourlyForecast() {
-    weatherData.hourly.map((hour) => {
+  function hourly() {
+    const hourly = weather.hourly;
+    hourly.map((hour) => {
       const date = new Date(hour.dt * 1000);
       //console.log(date);
     });
   }
 
-  currentWeather();
-  weeklyForecast();
-  hourlyForecast();
+  current();
+  daily();
+  hourly();
 }
 
-getWeather();
+getData();
