@@ -3,11 +3,7 @@ const app = express();
 const fetch = require("node-fetch");
 require("dotenv").config();
 
-const port = process.env.PORT || 3000;
-
-app.listen(port, () => {
-  console.log(`Starting server at ${port}`);
-});
+const port = process.env.PORT;
 
 app.use(express.static("public"));
 
@@ -31,4 +27,8 @@ app.get("/weather/:lat&:lon", async (req, res) => {
   const response = await fetch(api_url);
   const data = await response.json();
   res.json(data);
+});
+
+app.listen(port, () => {
+  console.log(`Starting server at ${port}`);
 });
