@@ -86,17 +86,16 @@ function init(location, weather) {
 
     for (let i = 0; i < hourly.length; i++) {
       const element = hourly[i];
-      const time = new Date(element.dt * 1000).getHours();
-
+      const time = new Date(element.dt * 1000);
       temp.push(element.temp);
-      label.push(time > 9 ? time + ":00" : "0" + time + ":00");
+      label.push(time);
     }
 
     const ctx = document.getElementById("chart").getContext("2d");
     new Chart(ctx, {
       type: "line",
       data: {
-        labels: label,
+        labels: label.slice(0, 24),
         datasets: [
           {
             label: "Temperature",
@@ -114,9 +113,20 @@ function init(location, weather) {
           mode: "index",
           intersect: false,
         },
-        hover: {
-          mode: "nearest",
-          intersect: true,
+        scales: {
+          xAxes: [
+            {
+              type: "time",
+              time: {
+                unit: "hour",
+                stepSize: 1,
+                displayFormats: {
+                  minute: "HH:mm",
+                  hour: "HH:mm",
+                },
+              },
+            },
+          ],
         },
       },
     });
