@@ -36,14 +36,14 @@ function init(location, weather) {
     const sunsetMinutes = new Date(current.sunset * 1000).getMinutes();
 
     const currentStructure = `
-      <h2>${city}</h2>
+      <h2><i class="wi wi-small-craft-advisory"></i>${city}</h2>
       <i class="wi wi-owm-day-${id}"></i>
       <p>${temp}°</p>
       <ul>
         <li>Føles som: ${feels_like}°</li>
         <li>UV index: ${uvi}</li>
         <li>Luftfugtighed: ${humidity}</li>
-        <li>Sol op/ned: ${sunriseHour}:${sunriseMinutes}/${sunsetHour}:${sunsetMinutes}</li>
+        <li><i class="wi wi-sunrise"></i>${sunriseHour}:${sunriseMinutes} <i class="wi wi-sunset"></i>${sunsetHour}:${sunsetMinutes}</li>
       </ul>
     `;
 
@@ -52,30 +52,26 @@ function init(location, weather) {
 
   function daily() {
     const days = weather.daily;
+    days.splice(0, 1);
 
     days.map((day) => {
-      const max = Math.round(day.temp.max);
-      const min = Math.round(day.temp.min);
+      const temp = Math.round(day.temp.day);
       const id = day.weather[0].id;
-      const description = day.weather[0].description;
       const wind_deg = day.wind_deg;
       const wind_speed = Math.round(day.wind_speed);
-      const dateNumber = new Date(day.dt * 1000).getDate();
-      const dateName = new Date(day.dt * 1000).toLocaleDateString("default", { month: "short" });
-      const date = dateNumber + " " + dateName;
+      const weekday = new Date(day.dt * 1000).toLocaleDateString("default", { weekday: "long" });
 
       const dailyStructure = `
         <ul class="forecast-day">
-          <li>${max}°/${min}°</li>  
-          <li><i class="wi wi-owm-day-${id}"></i></li>
-          <li>${description}</li>  
-          <li><i class="wi wi-direction-down" style="transform: rotate(${wind_deg}deg)"></i></>
+          <li class="weekday">${weekday}</li>  
+          <li class="icon-weather"><i class="wi wi-owm-day-${id}"></i></li>
+          <li class="temperature">${temp}°</li>  
+          <li class="icon-wind"><i class="wi wi-direction-down" style="transform: rotate(${wind_deg}deg)"></i></>
           <li>${wind_speed} m/s</li>
-          <li>${date}</li>  
         </ul>
       `;
 
-      document.getElementById("daily").innerHTML += dailyStructure;
+      document.getElementById("daily-weather").innerHTML += dailyStructure;
     });
   }
 
@@ -87,22 +83,22 @@ function init(location, weather) {
     for (let i = 0; i < hourly.length; i++) {
       const element = hourly[i];
       const time = new Date(element.dt * 1000);
-      temp.push(element.temp);
       label.push(time);
+      temp.push(element.temp);
     }
 
     const ctx = document.getElementById("chart").getContext("2d");
     new Chart(ctx, {
       type: "line",
       data: {
-        labels: label.slice(0, 24),
+        labels: label.slice(0, 25),
         datasets: [
           {
             label: "Temperature",
             data: temp,
-            borderWidth: 1,
-            backgroundColor: "rgba(0, 0, 0, 0)",
-            borderColor: "rgba(255, 99, 132, 1)",
+            borderWidth: 4,
+            backgroundColor: "#E2E2E2",
+            borderColor: "#404040",
             pointRadius: 0,
           },
         ],
@@ -124,6 +120,13 @@ function init(location, weather) {
                   minute: "HH:mm",
                   hour: "HH:mm",
                 },
+              },
+            },
+          ],
+          yAxes: [
+            {
+              scaleLabel: {
+                display: false,
               },
             },
           ],

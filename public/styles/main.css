@@ -7,13 +7,8 @@
 }
 
 body {
+  color: #404040;
   font-family: "Nunito", sans-serif;
-  display: flex;
-  justify-content: center;
-}
-
-main {
-  width: 75%;
 }
 
 ul {
@@ -21,8 +16,6 @@ ul {
 }
 
 .wi {
-  font-size: 30px;
-  margin: 10px 0;
   font-family: "weathericons";
   src: url("../font/weathericons-regular-webfont.eot");
   src: url("../font/weathericons-regular-webfont.eot?#iefix") format("embedded-opentype"), url("../font/weathericons-regular-webfont.woff") format("woff"),
@@ -32,12 +25,35 @@ ul {
   font-style: normal;
 }
 
-#daily {
-  display: flex;
+#daily #daily-weather {
+  font-size: 16px;
+  font-weight: 600;
+  display: grid;
+  grid-auto-flow: column;
 }
 
-#daily .forecast-day {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+#daily #daily-weather ul.forecast-day {
+  display: grid;
+  justify-content: center;
+}
+
+#daily #daily-weather ul.forecast-day li {
+  text-align: center;
+}
+
+#daily #daily-weather ul.forecast-day li.weekday {
+  text-transform: capitalize;
+}
+
+#daily #daily-weather ul.forecast-day li.icon-weather {
+  font-size: 45px;
+  margin: 20px 0 20px 0;
+}
+
+#daily #daily-weather ul.forecast-day li.temperature {
+  margin: 0 0 10px 0;
+}
+
+#daily ul.forecast-day li.icon-wind {
+  font-size: 30px;
 }
