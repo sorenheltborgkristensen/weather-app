@@ -61,10 +61,19 @@ function init(location, weather) {
       const wind_speed = Math.round(day.wind_speed);
       const weekday = new Date(day.dt * 1000).toLocaleDateString("default", { weekday: "long" });
 
+      // skift imellem dag/nat ikoner
+      const dateTime = new Date();
+      let dayNight;
+      if (dateTime.getHours() > 17 && dateTime.getHours() < 7) {
+        dayNight = "night";
+      } else {
+        dayNight = "day";
+      }
+
       const dailyStructure = `
         <ul class="forecast-day">
           <li class="weekday">${weekday}</li>  
-          <li class="icon-weather"><i class="wi wi-owm-day-${id}"></i></li>
+          <li class="icon-weather"><i class="wi wi-owm-${dayNight}-${id}"></i></li>
           <li class="temperature">${temp}°</li>  
           <li class="icon-wind"><i class="wi wi-direction-down" style="transform: rotate(${wind_deg}deg)"></i></>
           <li>${wind_speed} m/s</li>
@@ -87,6 +96,7 @@ function init(location, weather) {
       temp.push(element.temp);
     }
 
+    // chart.js indstillinger
     const ctx = document.getElementById("chart").getContext("2d");
     new Chart(ctx, {
       type: "line",
@@ -97,7 +107,7 @@ function init(location, weather) {
             label: "Temperature",
             data: temp,
             borderWidth: 4,
-            backgroundColor: "#E2E2E2",
+            backgroundColor: "rgba(226, 226, 226, 0.5)",
             borderColor: "#404040",
             pointRadius: 0,
           },
