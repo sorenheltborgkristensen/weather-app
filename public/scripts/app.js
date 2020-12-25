@@ -64,10 +64,10 @@ function init(location, weather) {
       // skift imellem dag/nat ikoner
       const dateTime = new Date();
       let dayNight;
-      if (dateTime.getHours() > 17 && dateTime.getHours() < 7) {
-        dayNight = "night";
-      } else {
+      if (dateTime.getHours() >= 18 && dateTime.getHours() < 6) {
         dayNight = "day";
+      } else {
+        dayNight = "night";
       }
 
       const dailyStructure = `
