@@ -24,7 +24,6 @@ async function getData() {
 function init(location, weather) {
   function current() {
     const current = weather.current;
-    const city = location.city;
     const id = current.weather[0].id;
     const temp = Math.round(current.temp);
     const feels_like = Math.round(current.feels_like);
@@ -34,6 +33,7 @@ function init(location, weather) {
     const sunriseMinutes = new Date(current.sunrise * 1000).getMinutes();
     const sunsetHour = new Date(current.sunset * 1000).getHours();
     const sunsetMinutes = new Date(current.sunset * 1000).getMinutes();
+    const city = location.city;
 
     const currentStructure = `
       <h2><i class="wi wi-small-craft-advisory"></i>${city}</h2>
@@ -52,7 +52,7 @@ function init(location, weather) {
 
   function daily() {
     const days = weather.daily;
-    days.splice(0, 1);
+    days.splice(7, 1);
 
     days.map((day) => {
       const temp = Math.round(day.temp.day);
@@ -61,19 +61,10 @@ function init(location, weather) {
       const wind_speed = Math.round(day.wind_speed);
       const weekday = new Date(day.dt * 1000).toLocaleDateString("default", { weekday: "long" });
 
-      // skift imellem dag/nat ikoner
-      const dateTime = new Date();
-      let dayNight;
-      if (dateTime.getHours() >= 18 && dateTime.getHours() < 6) {
-        dayNight = "day";
-      } else {
-        dayNight = "night";
-      }
-
       const dailyStructure = `
         <ul class="forecast-day">
           <li class="weekday">${weekday}</li>  
-          <li class="icon-weather"><i class="wi wi-owm-${dayNight}-${id}"></i></li>
+          <li class="icon-weather"><i class="wi wi-owm-day-${id}"></i></li>
           <li class="temperature">${temp}°</li>  
           <li class="icon-wind"><i class="wi wi-direction-down" style="transform: rotate(${wind_deg}deg)"></i></>
           <li>${wind_speed} m/s</li>
