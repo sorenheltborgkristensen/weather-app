@@ -61,10 +61,19 @@ function init(location, weather) {
       const wind_speed = Math.round(day.wind_speed);
       const weekday = new Date(day.dt * 1000).toLocaleDateString("default", { weekday: "long" });
 
+      const currentHour = new Date().getHours();
+      let iconDayNight;
+
+      if (currentHour >= 06 && currentHour <= 20) {
+        iconDayNight = "day";
+      } else {
+        iconDayNight = "night";
+      }
+
       const dailyStructure = `
         <ul class="forecast-day">
           <li class="weekday">${weekday}</li>  
-          <li class="icon-weather"><i class="wi wi-owm-day-${id}"></i></li>
+          <li class="icon-weather"><i class="wi wi-owm-${iconDayNight}-${id}"></i></li>
           <li class="temperature">${temp}°</li>  
           <li class="icon-wind"><i class="wi wi-direction-down" style="transform: rotate(${wind_deg}deg)"></i></>
           <li>${wind_speed} m/s</li>

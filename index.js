@@ -30,5 +30,5 @@ app.get("/weather/:lat&:lon", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Starting server at ${port}`);
+  console.log(`Starting server at localhost:${port}`);
 });
