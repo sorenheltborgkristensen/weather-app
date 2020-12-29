@@ -109,9 +109,11 @@ function init(location, weather) {
           list.appendChild(listItem);
 
           if (data.icon === element) {
+            const weatherIcon = document.createElement("i");
             const iconDayNight = dayNight();
             listItem.textContent = "";
-            listItem.classList = `wi wi-owm-${iconDayNight}-${element}`;
+            weatherIcon.classList = `wi wi-owm-${iconDayNight}-${element}`;
+            listItem.appendChild(weatherIcon);
           } else if (data.temp === element) {
             listItem.textContent = element + "°";
           } else if (data.windDeg === element) {
@@ -120,6 +122,8 @@ function init(location, weather) {
             windIcon.classList = "wi wi-direction-down";
             windIcon.style = `transform: rotate(${element}deg)`;
             listItem.appendChild(windIcon);
+          } else if (data.windSpeed === element) {
+            listItem.textContent = element + " m/s";
           }
         }
       }

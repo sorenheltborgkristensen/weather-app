@@ -33,3 +33,16 @@ ul {
   display: grid;
   grid-auto-flow: column;
 }
+
+#daily #daily-weather ul {
+  display: grid;
+  justify-content: center;
+}
+
+#daily #daily-weather ul li {
+  text-align: center;
+}
+
+#daily #daily-weather ul li i {
+  font-size: 20px;
+}
