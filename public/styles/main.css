@@ -43,6 +43,10 @@ ul {
   text-align: center;
 }
 
+#daily #daily-weather ul li.weekday {
+  text-transform: capitalize;
+}
+
 #daily #daily-weather ul li i {
   font-size: 20px;
 }

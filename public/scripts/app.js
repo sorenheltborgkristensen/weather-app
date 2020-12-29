@@ -108,7 +108,9 @@ function init(location, weather) {
           listItem.textContent = listContent;
           list.appendChild(listItem);
 
-          if (data.icon === element) {
+          if (data.weekday === element) {
+            listItem.classList = "weekday";
+          } else if (data.icon === element) {
             const weatherIcon = document.createElement("i");
             const iconDayNight = dayNight();
             listItem.textContent = "";
