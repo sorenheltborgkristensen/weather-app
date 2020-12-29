@@ -24,64 +24,107 @@ async function getData() {
 function init(location, weather) {
   function current() {
     const current = weather.current;
-    const id = current.weather[0].id;
+    const currentContainer = document.getElementById("current");
+
+    // city
+    const city = location.city;
+    const cityContainer = document.createElement("h2");
+    cityContainer.textContent = city;
+
+    // icon
+    const icon = current.weather[0].id;
+    const iconContainer = document.createElement("i");
+    iconContainer.classList = `wi wi-owm-day-${icon}`;
+
+    // temperature
     const temp = Math.round(current.temp);
-    const feels_like = Math.round(current.feels_like);
-    const uvi = current.uvi;
-    const humidity = current.humidity;
+    const tempContainer = document.createElement("p");
+    tempContainer.textContent = temp;
+
+    // feels like
+    const feelsLike = Math.round(current.feels_like);
+    const feelsLikeContainer = document.createElement("p");
+    feelsLikeContainer.textContent = feelsLike;
+
+    // uv-index
+    const uvi = Math.round(current.uvi);
+    const uviContainer = document.createElement("p");
+    uviContainer.textContent = uvi;
+
+    // humidity
+    const humidity = Math.round(current.humidity);
+    const humidityContainer = document.createElement("p");
+    humidityContainer.textContent = humidity;
+
+    // sunrise
     const sunriseHour = new Date(current.sunrise * 1000).getHours();
     const sunriseMinutes = new Date(current.sunrise * 1000).getMinutes();
+    const sunriseContainer = document.createElement("p");
+    sunriseContainer.textContent = sunriseHour + ":" + sunriseMinutes;
+
+    // sunset
     const sunsetHour = new Date(current.sunset * 1000).getHours();
     const sunsetMinutes = new Date(current.sunset * 1000).getMinutes();
-    const city = location.city;
+    const sunsetContainer = document.createElement("p");
+    sunsetContainer.textContent = sunsetHour + ":" + sunsetMinutes;
 
-    const currentStructure = `
-      <h2><i class="wi wi-small-craft-advisory"></i>${city}</h2>
-      <i class="wi wi-owm-day-${id}"></i>
-      <p>${temp}°</p>
-      <ul>
-        <li>Føles som: ${feels_like}°</li>
-        <li>UV index: ${uvi}</li>
-        <li>Luftfugtighed: ${humidity}</li>
-        <li><i class="wi wi-sunrise"></i>${sunriseHour}:${sunriseMinutes} <i class="wi wi-sunset"></i>${sunsetHour}:${sunsetMinutes}</li>
-      </ul>
-    `;
-
-    document.getElementById("current").innerHTML = currentStructure;
+    currentContainer.append(
+      cityContainer,
+      iconContainer,
+      tempContainer,
+      feelsLikeContainer,
+      uviContainer,
+      humidityContainer,
+      sunriseContainer,
+      sunsetContainer
+    );
   }
 
   function daily() {
     const days = weather.daily;
     days.splice(7, 1);
 
-    days.map((day) => {
-      const temp = Math.round(day.temp.day);
-      const id = day.weather[0].id;
-      const wind_deg = day.wind_deg;
-      const wind_speed = Math.round(day.wind_speed);
-      const weekday = new Date(day.dt * 1000).toLocaleDateString("default", { weekday: "long" });
+    for (let i = 0; i < days.length; i++) {
+      const day = days[i];
 
-      const currentHour = new Date().getHours();
-      let iconDayNight;
+      const data = {
+        weekday: new Date(day.dt * 1000).toLocaleDateString("default", { weekday: "long" }),
+        temp: Math.round(day.temp.day),
+        icon: day.weather[0].id,
+        windDeg: day.wind_deg,
+        windSpeed: day.wind_speed,
+      };
 
-      if (currentHour >= 06 && currentHour <= 20) {
-        iconDayNight = "day";
-      } else {
-        iconDayNight = "night";
+      const list = document.createElement("ul");
+      list.classList = "forecast-day";
+
+      for (const weather in data) {
+        if (Object.hasOwnProperty.call(data, weather)) {
+          const element = data[weather];
+
+          const listContent = element;
+          const listItem = document.createElement("li");
+          listItem.textContent = listContent;
+          list.appendChild(listItem);
+
+          if (data.windDeg === element) {
+            listItem.textContent = "";
+
+            const windIcon = document.createElement("i");
+            windIcon.classList = "wi wi-direction-down";
+            windIcon.style = `transform: rotate(${element}deg)`;
+            listItem.appendChild(windIcon);
+          }
+
+          if (data.icon === element) {
+            listItem.textContent = "";
+            listItem.classList = `wi wi-owm-day-${element}`;
+          }
+        }
       }
 
-      const dailyStructure = `
-        <ul class="forecast-day">
-          <li class="weekday">${weekday}</li>  
-          <li class="icon-weather"><i class="wi wi-owm-${iconDayNight}-${id}"></i></li>
-          <li class="temperature">${temp}°</li>  
-          <li class="icon-wind"><i class="wi wi-direction-down" style="transform: rotate(${wind_deg}deg)"></i></>
-          <li>${wind_speed} m/s</li>
-        </ul>
-      `;
-
-      document.getElementById("daily-weather").innerHTML += dailyStructure;
-    });
+      document.getElementById("daily-weather").appendChild(list);
+    }
   }
 
   function hourly() {
