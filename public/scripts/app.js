@@ -44,57 +44,47 @@ function init(location, weather) {
     const cityContainer = document.createElement("h2");
     cityContainer.textContent = city;
 
-    // icon
-    const icon = current.weather[0].id;
-    const iconContainer = document.createElement("i");
-    const iconDayNight = dayNight();
-    iconContainer.classList = `wi wi-owm-${iconDayNight}-${icon}`;
+    const data = {
+      icon: current.weather[0].id,
+      temp: Math.round(current.temp),
+      feelsLike: Math.round(current.feels_like),
+      uvi: Math.round(current.uvi),
+      humidity: Math.round(current.humidity),
+      sunrise: new Date(current.sunrise * 1000),
+      sunset: new Date(current.sunset * 1000),
+    };
 
-    // temperature
-    const temp = Math.round(current.temp);
-    const tempContainer = document.createElement("p");
-    tempContainer.textContent = temp;
+    const list = document.createElement("ul");
 
-    // feels like
-    const feelsLike = Math.round(current.feels_like);
-    const feelsLikeContainer = document.createElement("p");
-    feelsLikeContainer.textContent = feelsLike;
+    for (const weather in data) {
+      if (Object.hasOwnProperty.call(data, weather)) {
+        const element = data[weather];
+        let listContent = element;
+        const listItem = document.createElement("li");
+        listItem.textContent = listContent;
+        list.appendChild(listItem);
 
-    // uv-index
-    const uvi = Math.round(current.uvi);
-    const uviContainer = document.createElement("p");
-    uviContainer.textContent = uvi;
+        if (data.icon === element) {
+          const iconDayNight = dayNight();
+          listItem.textContent = "";
+          listItem.classList = `wi wi-owm-${iconDayNight}-${element}`;
+        }
 
-    // humidity
-    const humidity = Math.round(current.humidity);
-    const humidityContainer = document.createElement("p");
-    humidityContainer.textContent = humidity;
+        if (data.sunrise === element) {
+          listItem.textContent = listContent.getHours() + ":" + listContent.getMinutes();
+        }
 
-    // sunrise
-    const sunriseHour = new Date(current.sunrise * 1000).getHours();
-    const sunriseMinutes = new Date(current.sunrise * 1000).getMinutes();
-    const sunriseContainer = document.createElement("p");
-    sunriseContainer.textContent = sunriseHour + ":" + sunriseMinutes;
+        if (data.sunset === element) {
+          listItem.textContent = listContent.getHours() + ":" + listContent.getMinutes();
+        }
+      }
+    }
 
-    // sunset
-    const sunsetHour = new Date(current.sunset * 1000).getHours();
-    const sunsetMinutes = new Date(current.sunset * 1000).getMinutes();
-    const sunsetContainer = document.createElement("p");
-    sunsetContainer.textContent = sunsetHour + ":" + sunsetMinutes;
-
-    currentContainer.append(
-      cityContainer,
-      iconContainer,
-      tempContainer,
-      feelsLikeContainer,
-      uviContainer,
-      humidityContainer,
-      sunriseContainer,
-      sunsetContainer
-    );
+    currentContainer.append(cityContainer, list);
   }
 
   function daily() {
+    const dailyConstainer = document.getElementById("daily-weather");
     const days = weather.daily;
     days.splice(7, 1);
 
@@ -137,7 +127,7 @@ function init(location, weather) {
         }
       }
 
-      document.getElementById("daily-weather").appendChild(list);
+      dailyConstainer.appendChild(list);
     }
   }
 
