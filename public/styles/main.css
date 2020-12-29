@@ -33,29 +33,3 @@ ul {
   display: grid;
   grid-auto-flow: column;
 }
-
-#daily #daily-weather ul.forecast-day {
-  display: grid;
-  justify-content: center;
-}
-
-#daily #daily-weather ul.forecast-day li {
-  text-align: center;
-}
-
-#daily #daily-weather ul.forecast-day li.weekday {
-  text-transform: capitalize;
-}
-
-#daily #daily-weather ul.forecast-day li.icon-weather {
-  font-size: 45px;
-  margin: 20px 0 20px 0;
-}
-
-#daily #daily-weather ul.forecast-day li.temperature {
-  margin: 0 0 10px 0;
-}
-
-#daily ul.forecast-day li.icon-wind {
-  font-size: 30px;
-}

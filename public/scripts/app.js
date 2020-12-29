@@ -64,6 +64,10 @@ function init(location, weather) {
         listItem.textContent = listContent;
         list.appendChild(listItem);
 
+        if (data.temp === element) {
+          listItem.textContent = element + "°";
+        }
+
         if (data.icon === element) {
           const iconDayNight = dayNight();
           listItem.textContent = "";
@@ -93,8 +97,8 @@ function init(location, weather) {
 
       const data = {
         weekday: new Date(day.dt * 1000).toLocaleDateString("default", { weekday: "long" }),
-        temp: Math.round(day.temp.day),
         icon: day.weather[0].id,
+        temp: Math.round(day.temp.day),
         windDeg: day.wind_deg,
         windSpeed: day.wind_speed,
       };
@@ -109,6 +113,10 @@ function init(location, weather) {
           const listItem = document.createElement("li");
           listItem.textContent = listContent;
           list.appendChild(listItem);
+
+          if (data.temp === element) {
+            listItem.textContent = element + "°";
+          }
 
           if (data.windDeg === element) {
             listItem.textContent = "";
