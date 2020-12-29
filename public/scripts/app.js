@@ -22,6 +22,19 @@ async function getData() {
 }
 
 function init(location, weather) {
+  function dayNight() {
+    const currentHour = new Date().getHours();
+    let iconDayNight;
+
+    if (currentHour >= 06 && currentHour <= 20) {
+      iconDayNight = "day";
+    } else {
+      iconDayNight = "night";
+    }
+
+    return iconDayNight;
+  }
+
   function current() {
     const current = weather.current;
     const currentContainer = document.getElementById("current");
@@ -34,7 +47,8 @@ function init(location, weather) {
     // icon
     const icon = current.weather[0].id;
     const iconContainer = document.createElement("i");
-    iconContainer.classList = `wi wi-owm-day-${icon}`;
+    const iconDayNight = dayNight();
+    iconContainer.classList = `wi wi-owm-${iconDayNight}-${icon}`;
 
     // temperature
     const temp = Math.round(current.temp);
@@ -96,7 +110,6 @@ function init(location, weather) {
       };
 
       const list = document.createElement("ul");
-      list.classList = "forecast-day";
 
       for (const weather in data) {
         if (Object.hasOwnProperty.call(data, weather)) {
@@ -117,8 +130,9 @@ function init(location, weather) {
           }
 
           if (data.icon === element) {
+            const iconDayNight = dayNight();
             listItem.textContent = "";
-            listItem.classList = `wi wi-owm-day-${element}`;
+            listItem.classList = `wi wi-owm-${iconDayNight}-${element}`;
           }
         }
       }
