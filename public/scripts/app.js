@@ -59,27 +59,21 @@ function init(location, weather) {
     for (const weather in data) {
       if (Object.hasOwnProperty.call(data, weather)) {
         const element = data[weather];
-        let listContent = element;
+        const listContent = element;
         const listItem = document.createElement("li");
         listItem.textContent = listContent;
         list.appendChild(listItem);
-
-        if (data.temp === element) {
-          listItem.textContent = element + "°";
-        }
 
         if (data.icon === element) {
           const iconDayNight = dayNight();
           listItem.textContent = "";
           listItem.classList = `wi wi-owm-${iconDayNight}-${element}`;
-        }
-
-        if (data.sunrise === element) {
-          listItem.textContent = listContent.getHours() + ":" + listContent.getMinutes();
-        }
-
-        if (data.sunset === element) {
-          listItem.textContent = listContent.getHours() + ":" + listContent.getMinutes();
+        } else if (data.temp === element) {
+          listItem.textContent = element + "°";
+        } else if (data.sunrise === element) {
+          listItem.innerHTML = `<i class='wi wi-sunrise'></i> ${listContent.getHours()}:${listContent.getMinutes()}`;
+        } else if (data.sunset === element) {
+          listItem.innerHTML = `<i class='wi wi-sunset'></i> ${listContent.getHours()}:${listContent.getMinutes()}`;
         }
       }
     }
@@ -114,23 +108,18 @@ function init(location, weather) {
           listItem.textContent = listContent;
           list.appendChild(listItem);
 
-          if (data.temp === element) {
-            listItem.textContent = element + "°";
-          }
-
-          if (data.windDeg === element) {
-            listItem.textContent = "";
-
-            const windIcon = document.createElement("i");
-            windIcon.classList = "wi wi-direction-down";
-            windIcon.style = `transform: rotate(${element}deg)`;
-            listItem.appendChild(windIcon);
-          }
-
           if (data.icon === element) {
             const iconDayNight = dayNight();
             listItem.textContent = "";
             listItem.classList = `wi wi-owm-${iconDayNight}-${element}`;
+          } else if (data.temp === element) {
+            listItem.textContent = element + "°";
+          } else if (data.windDeg === element) {
+            const windIcon = document.createElement("i");
+            listItem.textContent = "";
+            windIcon.classList = "wi wi-direction-down";
+            windIcon.style = `transform: rotate(${element}deg)`;
+            listItem.appendChild(windIcon);
           }
         }
       }
